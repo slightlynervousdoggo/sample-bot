@@ -1,0 +1,15 @@
+{
+  "name": "mirror",
+  "version": "1.0.0",
+  "description": "Bot, API, and Dashboard for Discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "express": "^4.17.1"
+  }
+}
