@@ -1,0 +1,19 @@
+module.exports = {
+  apps: [
+    {
+      name: 'mirror',
+      script: './server.js',
+      env: {
+        NODE_ENV: 'development'
+      },
+      env_production: {
+        NODE_ENV: 'production',
+        BOT_TOKEN: '',
+        PREFIX: 'mirror!',
+        ALT_PREFIX: 'm!',
+        ROLESWITHKICKPERMISSION: ["", "", ""],
+        ROLESWITHBANPERMISSION: ["", "", ""]
+      }
+    }
+  ]
+};
