@@ -2,14 +2,18 @@
   "name": "mirror",
   "version": "1.0.0",
   "description": "Bot, API, and Dashboard for Discord bot",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "pm2 start ecosystem.config.js --env production",
+    "server": "node --require dotenv/config server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.5.1",
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }
