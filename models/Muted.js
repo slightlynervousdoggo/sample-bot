@@ -10,10 +10,6 @@ const MutedSchema = new Schema({
     type: String,
     required: true
   },
-  previousRoles: {
-    type: Array,
-    required: true
-  },
   guildId: {
     type: String,
     required: true
@@ -21,6 +17,7 @@ const MutedSchema = new Schema({
   mutedAt: {
     type: Date,
     required: true,
+    default: new Date(),
   },
   mutedUntil: {
     type: Date

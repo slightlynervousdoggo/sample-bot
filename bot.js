@@ -22,13 +22,21 @@ const startBot = async () => {
       // Check the database for muted users, and see if they can be unmuted
       setInterval(async () => {
         const mutedUsers = await Muted.find({})
-        console.log(mutedUsers)
 
         mutedUsers.forEach(async (r) => {
+          const guildMember = await client.guilds.get(r.guildId).members.get(r.userId)
+
+          // Unmute users that had their muted role manually removed
+          if (!guildMember.roles.has(MUTEDROLE)) {
+            await Muted.deleteOne({ _id: r._id })
+            return
+          }
+
           if (!r.mutedUntil) return
+
+          // Unmute users past the mute date
           if (isAfter(new Date(), r.mutedUntil)) {
-            const mutedUser = await client.guilds.get(r.guildId).members.get(r.userId)
-            await mutedUser.setRoles(r.previousRoles)
+            await guildMember.removeRole(MUTEDROLE)
             await Muted.deleteOne({ _id: r._id })
           }
         })
@@ -51,9 +59,7 @@ const startBot = async () => {
       const command = args.shift().toLowerCase();
 
       if (command === 'mute') {
-        if (!message.member.roles.some(r =>
-          ROLESWITHMUTEPERMISSION.includes(r.id)
-        )) {
+        if (!message.member.roles.some(r => ROLESWITHMUTEPERMISSION.includes(r.id))) {
           return message.reply("Sorry, you don't have permissions to use this command!")
         }
 
@@ -65,7 +71,6 @@ const startBot = async () => {
         }
 
         var reason;
-        var mutedAt;
         var mutedUntil;
 
         if (args[1] === '-d') {
@@ -85,8 +90,6 @@ const startBot = async () => {
             return message.reply("Invalid unit of time.")
           }
 
-          mutedAt = new Date();
-
           mutedUntil = add(mutedAt, {
             [unit]: duration
           })
@@ -98,15 +101,12 @@ const startBot = async () => {
           reason = "No reason provided"
         }
 
-        const previousRoles = member.roles.map(r => r.id)
         const guildId = member.guild.id;
 
         const query = {
           userId: member.user.id,
           username: member.user.username,
-          previousRoles,
           guildId,
-          mutedAt,
           mutedUntil
         }
 
@@ -117,11 +117,43 @@ const startBot = async () => {
           await muted.save()
 
           // Set to muted role so they can't send messages
-          await member.setRoles([MUTEDROLE], reason)
+          await member.addRole(MUTEDROLE, reason)
 
           message.reply(`${member.user.tag} has been muted by ${message.author.tag}. Reason: ${reason}`)
         } catch (e) {
-          message.reply(`Sorry ${message.author} I couldnt mute because of : ${e}`)
+          message.reply(`Sorry ${message.author}, I couldnt mute because of : ${e}`)
+        }
+      }
+
+      if (command === 'unmute') {
+        if (!message.member.roles.some(r => ROLESWITHMUTEPERMISSION.includes(r.id))) {
+          return message.reply("Sorry, you don't have permissions to use this command!")
+        }
+
+        const member = message.mentions.members.first() || message.guild.members.get(args[0]);
+
+        // Check if the user is in the server
+        if (!member) {
+          return message.reply("User is not in this server")
+        }
+
+        try {
+          const mutedUser = await Muted.findOne({ userId: member.id, guildId: member.guild.id })
+
+          // If the user isn't in db, check if they have the muted role (in case they were manually assigned the muted role)
+          if (!mutedUser) {
+            if (!member.roles.some(r => r.id === MUTEDROLE)) {
+              return message.reply(`${member.user.tag} is already unmuted`)
+            }
+            await member.removeRole(MUTEDROLE)
+            return message.reply(`${member.user.tag} is now unmuted`)
+          }
+
+          await member.removeRole(MUTEDROLE)
+          await Muted.deleteOne({ _id: mutedUser._id })
+          message.reply(`${member.user.tag} is now unmuted`)
+        } catch (e) {
+          message.reply(`Sorry ${message.author}, I couldn't unmute because of : ${e}`)
         }
       }
 
@@ -150,7 +182,7 @@ const startBot = async () => {
           await member.kick(reason)
           message.reply(`${member.user.tag} has been kicked by ${message.author.tag}. Reason: ${reason}`)
         } catch (e) {
-          message.reply(`Sorry ${message.author} I couldnt kick because of : ${error}`)
+          message.reply(`Sorry ${message.author}, I couldn't kick because of : ${e}`)
         }
       }
 
@@ -179,7 +211,7 @@ const startBot = async () => {
           await member.kick(reason)
           message.reply(`${member.user.tag} has been banned by ${message.author.tag}. Reason: ${reason}`)
         } catch (e) {
-          message.reply(`Sorry ${message.author} I couldnt ban because of : ${error}`)
+          message.reply(`Sorry ${message.author}, I couldn't ban because of : ${e}`)
         }
 
       }
