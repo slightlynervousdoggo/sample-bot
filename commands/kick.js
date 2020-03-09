@@ -4,9 +4,9 @@ module.exports = {
   name: 'kick',
   description: 'Kick a user from the server',
   async execute(message, args) {
-    if (!message.member.roles.some(r => ROLESWITHKICKPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
+    if (!message.member.roles.cache.some(r => ROLESWITHKICKPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
 
-    const member = message.mentions.members.first() || message.guild.members.get(args[0]);
+    const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
     // Check if the user is in the server
     if (!member) return message.reply("User is not in this server")

@@ -10,20 +10,22 @@ module.exports = {
   name: 'mute',
   description: 'Mute a member for temporary amount of time',
   async execute(message, args) {
-    if (!message.member.roles.some(r => ROLESWITHMUTEPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
+    if (!message.member.roles.cache.some(r => ROLESWITHMUTEPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
 
     const member = message.mentions.members.first() || message.guild.members.get(args[0]);
 
     // Check if the user is in the server
     if (!member) return message.reply("User is not in this server")
 
+    if (member.roles.cache.has(MUTEDROLE)) return message.reply("User is already muted!")
+
     let reason;
     let mutedUntil;
 
     if (args[1] === '-d') {
       const acceptedUnitsOfTime = ['minutes', 'hours', 'days']
-      const duration = args[2];
-      let unit = args[3];
+      var duration = args[2];
+      var unit = args[3];
       reason = args.slice(4).join(' ');
 
       if (unit === "minute" || unit === "hour" || unit === "day") unit = unit.concat('s')
@@ -57,9 +59,9 @@ module.exports = {
       await muted.save()
 
       // Set to muted role so they can't send messages
-      await member.addRole(MUTEDROLE, reason)
+      await member.roles.add(MUTEDROLE, reason)
 
-      message.reply(`${member.user.tag} has been muted by ${message.author.tag}. Reason: ${reason}`)
+      message.reply(`${member.user.tag} has been muted ${mutedUntil ? `for ${duration} ${unit}` : null}. Reason: ${reason}`)
     } catch (e) {
       message.reply(`Sorry ${message.author}, I couldnt mute because of : ${e}`)
     }

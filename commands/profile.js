@@ -5,8 +5,8 @@ module.exports = {
   name: 'profile',
   description: 'Get information on any Discord user',
   async execute(message, args) {
-    const guildMember = message.mentions.members.first() || message.guild.members.get(args[0])
-    guildMember ? user = guildMember.user : user = await message.client.users.get(args[0])
+    const guildMember = message.mentions.members.first() || await message.guild.member(args[0])
+    guildMember ? user = guildMember.user : user = await message.client.users.fetch(args[0])
     if (!user) return message.reply("User ID is not valid")
     const createdAt = format(user.createdAt, 'MMM do yyyy, H:mm:ss')
     const createdAtFromNow = formatDistance(new Date(), user.createdAt)
@@ -21,7 +21,7 @@ module.exports = {
             title: 'User Profile',
             description: `User data for <@${user.id}>`,
             thumbnail: {
-              url: user.avatarURL ? user.avatarURL : user.defaultAvatarURL
+              url: user.displayAvatarURL()
             },
             fields: [
               {
@@ -41,7 +41,7 @@ module.exports = {
               },
               {
                 name: 'Highest Role',
-                value: guildMember.highestRole.name,
+                value: guildMember.roles.highest,
                 inline: true
               },
               {
@@ -72,7 +72,7 @@ module.exports = {
             title: 'User Profile',
             description: `User data for <@${user.id}>`,
             thumbnail: {
-              url: user.avatarURL ? user.avatarURL : user.defaultAvatarURL
+              url: user.displayAvatarURL()
             },
             fields: [
               {

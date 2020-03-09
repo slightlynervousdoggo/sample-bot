@@ -7,7 +7,7 @@ module.exports = {
   name: 'unmute',
   description: 'Unmute a member',
   async execute(message, args) {
-    if (!message.member.roles.some(r => ROLESWITHMUTEPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
+    if (!message.member.roles.cache.some(r => ROLESWITHMUTEPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
 
     const member = message.mentions.members.first() || message.guild.members.get(args[0]);
 
@@ -20,11 +20,11 @@ module.exports = {
       // If the user isn't in db, check if they have the muted role (in case they were manually assigned the muted role)
       if (!mutedUser) {
         if (!member.roles.some(r => r.id === MUTEDROLE)) return message.reply(`${member.user.tag} is already unmuted`)
-        await member.removeRole(MUTEDROLE)
+        await member.roles.remove(MUTEDROLE)
         return message.reply(`${member.user.tag} is now unmuted`)
       }
 
-      await member.removeRole(MUTEDROLE)
+      await member.roles.remove(MUTEDROLE)
       await Muted.deleteOne({ _id: mutedUser._id })
       message.reply(`${member.user.tag} is now unmuted`)
     } catch (e) {

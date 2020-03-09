@@ -8,10 +8,10 @@ const checkMutedUsers = async client => {
   const mutedUsers = await Muted.find({})
 
   mutedUsers.forEach(async (r) => {
-    const guildMember = await client.guilds.get(r.guildId).members.get(r.userId)
+    const guildMember = await client.guilds.cache.get(r.guildId).members.cache.get(r.userId)
 
     // Unmute users that had their muted role manually removed
-    if (!guildMember.roles.has(MUTEDROLE)) {
+    if (!guildMember.roles.cache.has(MUTEDROLE)) {
       await Muted.deleteOne({ _id: r._id })
       return
     }
@@ -20,7 +20,7 @@ const checkMutedUsers = async client => {
 
     // Unmute users past the mute date
     if (isAfter(new Date(), r.mutedUntil)) {
-      await guildMember.removeRole(MUTEDROLE)
+      await guildMember.roles.remove(MUTEDROLE)
       await Muted.deleteOne({ _id: r._id })
     }
   })
