@@ -23,6 +23,14 @@ const startBot = async () => {
       setInterval(() => checkMutedUsers(client), 5000)
     });
 
+    client.on('guildMemberAdd', member => {
+      client.commands.get('membercount').update(member.guild)
+    })
+
+    client.on('guildMemberRemove', member => {
+      client.commands.get('membercount').update(member.guild)
+    })
+
     // Called whenever a message is created
     client.on(`message`, message => {
       // Ignore other bots
