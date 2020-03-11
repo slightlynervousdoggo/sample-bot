@@ -6,6 +6,7 @@ const MUTEDROLE = process.env.MUTEDROLE;
 module.exports = {
   name: 'unmute',
   description: 'Unmute a member',
+  guildOnly: true,
   args: true,
   usage: `<user|ID>`,
   async execute(message, args) {

@@ -48,6 +48,10 @@ const startBot = async () => {
 
       const command = client.commands.get(commandName);
 
+      if (command.guildOnly && message.channel.type !== 'text') {
+        return message.reply(`I can't execute that command inside DMs!`)
+      }
+
       if (command.args && !args.length) {
         let reply = `${message.author}, you didn't provide any arguments!`
 

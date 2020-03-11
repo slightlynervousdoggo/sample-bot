@@ -4,6 +4,7 @@ const formatDistance = require('date-fns/formatDistance')
 module.exports = {
   name: 'profile',
   description: 'Get information on any Discord user',
+  guildOnly: true,
   async execute(message, args) {
     let guildMember;
     let user;

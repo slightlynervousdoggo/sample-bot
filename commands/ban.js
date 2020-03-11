@@ -3,6 +3,7 @@ const ROLESWITHBANPERMISSION = process.env.ROLESWITHBANPERMISSION;
 module.exports = {
   name: 'ban',
   description: 'Ban a user from the server',
+  guildOnly: true,
   args: true,
   usage: `<user|ID>`,
   async execute(message, args) {

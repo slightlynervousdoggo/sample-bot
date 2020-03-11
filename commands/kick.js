@@ -3,6 +3,7 @@ const ROLESWITHKICKPERMISSION = process.env.ROLESWITHKICKPERMISSION
 module.exports = {
   name: 'kick',
   description: 'Kick a user from the server',
+  guildOnly: true,
   args: true,
   usage: `<user|ID>`,
   async execute(message, args) {

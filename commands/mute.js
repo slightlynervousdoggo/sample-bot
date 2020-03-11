@@ -9,6 +9,7 @@ const MUTEDROLE = process.env.MUTEDROLE;
 module.exports = {
   name: 'mute',
   description: 'Mute a member for temporary amount of time',
+  guildOnly: true,
   args: true,
   usage: `<user|ID> [-d duration <minutes|hours|days>] [reason]`,
   async execute(message, args) {
