@@ -41,12 +41,14 @@ const startBot = async () => {
 
       // Splice "command" away from "arguments"
       const args = message.content.slice(PREFIX.length).trim().split(/ +/g);
-      const command = args.shift().toLowerCase();
+      const commandName = args.shift().toLowerCase();
 
-      if (!client.commands.has(command)) return
+      if (!client.commands.has(commandName)) return
+
+      const command = client.commands.get(commandName);
 
       try {
-        client.commands.get(command).execute(message, args);
+        command.execute(message, args);
       } catch (e) {
         console.log(e)
         message.reply('Oops! There was an error trying to run that command!')
