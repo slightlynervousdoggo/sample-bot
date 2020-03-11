@@ -14,13 +14,14 @@ for (const file of commandFiles) {
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const PREFIX = process.env.PREFIX;
+const checkMutedUsersInterval = 5000
 
 const startBot = async () => {
   try {
     // Called when the server starts
     client.on('ready', () => {
       console.log(`Logged in as ${client.user.tag}!`);
-      setInterval(() => checkMutedUsers(client), 5000)
+      setInterval(() => checkMutedUsers(client), checkMutedUsersInterval)
     });
 
     client.on('guildMemberAdd', member => {
