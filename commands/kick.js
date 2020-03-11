@@ -3,6 +3,8 @@ const ROLESWITHKICKPERMISSION = process.env.ROLESWITHKICKPERMISSION
 module.exports = {
   name: 'kick',
   description: 'Kick a user from the server',
+  args: true,
+  usage: `<user|ID>`,
   async execute(message, args) {
     if (!message.member.roles.cache.some(r => ROLESWITHKICKPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
 

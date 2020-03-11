@@ -3,6 +3,8 @@ const ROLESWITHBANPERMISSION = process.env.ROLESWITHBANPERMISSION;
 module.exports = {
   name: 'ban',
   description: 'Ban a user from the server',
+  args: true,
+  usage: `<user|ID>`,
   async execute(message, args) {
     if (!message.member.roles.cache.some(r => ROLESWITHBANPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
 

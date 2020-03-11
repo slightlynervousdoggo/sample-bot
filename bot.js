@@ -48,6 +48,16 @@ const startBot = async () => {
 
       const command = client.commands.get(commandName);
 
+      if (command.args && !args.length) {
+        let reply = `${message.author}, you didn't provide any arguments!`
+
+        if (command.usage) {
+          reply += `\nThe correct usage would be: \`${PREFIX}${command.name} ${command.usage}\``
+        }
+
+        return message.reply(reply)
+      }
+
       try {
         command.execute(message, args);
       } catch (e) {

@@ -6,6 +6,8 @@ const getMemberCountChannel = async (guild) => {
 module.exports = {
   name: 'membercount',
   description: 'Turn member count on or off',
+  args: true,
+  usage: `<show|hide>`,
   async update(guild) {
     const memberCountChannel = await getMemberCountChannel(guild)
     if (!memberCountChannel) {
@@ -38,7 +40,6 @@ module.exports = {
 
     // Show or hide the member count
     const showMemberCountChannel = async visible => {
-      console.log(message.guild)
       let memberCountChannel = await getMemberCountChannel(message.guild)
       if (visible) {
         if (memberCountChannel) {

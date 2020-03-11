@@ -9,6 +9,8 @@ const MUTEDROLE = process.env.MUTEDROLE;
 module.exports = {
   name: 'mute',
   description: 'Mute a member for temporary amount of time',
+  args: true,
+  usage: `<user|ID> [-d duration <minutes|hours|days>] [reason]`,
   async execute(message, args) {
     if (!message.member.roles.cache.some(r => ROLESWITHMUTEPERMISSION.includes(r.id))) return message.reply("Sorry, you don't have permissions to use this command!")
 
