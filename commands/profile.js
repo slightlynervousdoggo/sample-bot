@@ -5,9 +5,18 @@ module.exports = {
   name: 'profile',
   description: 'Get information on any Discord user',
   async execute(message, args) {
-    const guildMember = message.mentions.members.first() || await message.guild.member(args[0])
-    guildMember ? user = guildMember.user : user = await message.client.users.fetch(args[0])
-    if (!user) return message.reply("User ID is not valid")
+    let guildMember;
+    let user;
+    if (!args[0]) {
+      guildMember = message.member
+    } else {
+      guildMember = message.mentions.members.first() || await message.guild.member(args[0])
+    }
+    try {
+      guildMember ? user = guildMember.user : user = await message.client.users.fetch(args[0])
+    } catch (e) {
+      return message.reply("User ID is not valid")
+    }
     const createdAt = format(user.createdAt, 'MMM do yyyy, H:mm:ss')
     const createdAtFromNow = formatDistance(new Date(), user.createdAt)
 
