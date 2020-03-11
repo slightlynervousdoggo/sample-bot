@@ -5,7 +5,7 @@ const getMemberCountChannel = async (guild) => {
 
 module.exports = {
   name: 'membercount',
-  description: 'Turn member count on or off',
+  description: 'Turn member count channel on or off',
   args: true,
   usage: `<show|hide>`,
   async update(guild) {
