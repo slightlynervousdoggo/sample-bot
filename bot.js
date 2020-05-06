@@ -2,6 +2,7 @@ const fs = require('fs')
 const Discord = require('discord.js');
 
 const { checkMutedUsers } = require('./utils/utils')
+const { createLog } = require('./utils/logs')
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -30,6 +31,10 @@ const startBot = async () => {
 
     client.on('guildMemberRemove', member => {
       client.commands.get('membercount').update(member.guild)
+    })
+
+    client.on('messageDelete', async message => {
+      createLog(message)
     })
 
     // Called whenever a message is created
